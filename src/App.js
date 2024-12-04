@@ -34,25 +34,25 @@ class App extends Component {
   }
 
   tick() {
-    const { mode, paused, showCursor, editing } = this.state;
-    if (editing) {
-      this.setState({ showCursor: !showCursor });
-    }
-    if (paused) return;
-    this.setState((prevState) => {
-      const t = prevState.t + (mode === 'countdown' ? -1 : 1) * 0.5;
-      if (t <= 0) {
-        return {
-          t: 0,
-          paused: true,
-        }
-      } else {
-        return {
-          t,
-        }
-      }
-    });
+  const { mode, paused, showCursor, editing } = this.state;
+  if (editing) {
+    this.setState({ showCursor: !showCursor });
   }
+  if (paused) return;
+  this.setState((prevState) => {
+    const t = prevState.t + (mode === 'countdown' ? -1 : 1) * 0.5;
+    if (t <= 0) {
+      // When time reaches 0, reset and restart the timer automatically
+      this.setState({ t: 0, paused: true }); // stop the timer
+      setTimeout(() => {
+        this.setState({ t: 0, paused: false }); // restart the timer after a short delay
+      }, 1000); // Adjust the delay (1000ms = 1 second)
+    } else {
+      return { t };
+    }
+  });
+}
+
 
   toggleFullScreen = () => {
     const { fullscreen } = this.state;
